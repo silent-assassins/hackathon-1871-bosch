@@ -1,0 +1,25 @@
+{
+  "name": "hackathon-pi-project",
+  "version": "0.1.0",
+  "description": "Hackathon project for Bosch CI/BD Hackathon 1871",
+  "main": "index.js",
+  "dependencies": {
+  "python-shell": "^0.4.0",
+  "relayr": "^0.3.8",
+  "request": "^2.72.0"
+  },
+  "devDependencies": { },
+  "scripts": {
+  "test": "echo /Error: no test specified && exit 1"
+  },
+  "repository": {
+  "type": "git",
+  "url": "git+https://github.com/silent-assassins/hackathon-pi-project.git"
+  },
+  "author": "Michael Fisher <michaeljohnfisher@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+  "url": "https://github.com/silent-assassins/hackathon-pi-project/issues"
+  },
+  "homepage": "https://github.com/silent-assassins/hackathon-pi-project#readme"
+}
