@@ -1,12 +1,13 @@
 var request = require('request');
 var PythonShell = require('python-shell');
 var Relayr = require('relayr');
+var config = require('./config');
 
 //relayr information
-var app_id = process.env.APP_ID;
-var token = process.env.TOKEN;
-var dev_id = process.env.DEVICE_ID;
-var topic = process.env.TOPIC;
+var app_id = config.APP_ID;
+var token = config.TOKEN;
+var dev_id = config.DEVICE_ID;
+var topic = config.TOPIC;
 
 // Global variable for current state (ex: On/Off)
 var state = "0";
@@ -27,7 +28,7 @@ relayr.on('data', function(topic, msg) {
 });
 
 //adafruit information
-var aioKey = process.env.AIO_KEY;
+var aioKey = config.AIO_KEY;
 var options = {
   url: 'https://io.adafruit.com/api/feeds/586533',
   headers: {
