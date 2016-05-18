@@ -20,10 +20,8 @@ relayr.on('connect', function() {
 
 relayr.on('data', function(topic, msg) {
   if (msg.readings[0].meaning == "temperature") {
-    console.log(msg.readings[0].value);
     if (msg.readings[0].value >= 30.3 && state != "off") {
-      pythonCommand('off');
-      state = "off";
+      pythonCommand('off', 'off');
     }
   }
 });
@@ -39,20 +37,14 @@ var options = {
 
 function callAdafruit() {
   request(options, function (err, res, body) {
-
-    if (err) {
-      console.log("error");
-    }
+    if (err) console.log(err);
 
     if (res.statusCode != 200) {
-      // TODO: write a function to handle different statusCodes
-      console.log("WARNING: API Rate limit reached.  Waiting 15 seconds before retrying.");
       setTimeout(function() {
         callAdafruit();
       }, 15000);
     } else {
       var data = JSON.parse(body);
-      console.log(data.last_value);
 
       if (state === "off") {
         // Emergency shut off, wait 20 seconds before allowing user input again.
@@ -61,26 +53,22 @@ function callAdafruit() {
           callAdafruit();
         }, 20000);
       } else if (state === data.last_value) {
-        console.log("value hasn't changed");
+        setTimeout(function() {
+          callAdafruit();
+        }, 5000);
       } else {
         switch(data.last_value) {
           case "0":
-            pythonCommand('off');
-            state = data.last_value;
-            console.log("value changed to " + state);
+            pythonCommand('off', data.last_value);
             break;
           case "50":
-            pythonCommand('low');
-            state = data.last_value;
-            console.log("value changed to " + state);
+            pythonCommand('low', data.last_value);
             break;
           case "100":
-            pythonCommand('on');
-            state = data.last_value;
-            console.log("value changed to " + state);
+            pythonCommand('on', data.last_value);
             break;
           default:
-            pythonCommand('off');
+            pythonCommand('off', data.last_value);
         }
       }
 
@@ -91,13 +79,15 @@ function callAdafruit() {
   });
 }
 
-function pythonCommand(command) {
+function pythonCommand(command, value) {
   var pyOptions = {
     "args": command
   };
 
   PythonShell.run('servo2.py', pyOptions, function(err, results) {
     if (err) console.log(err);
+    state = value;
+    console.log("State changed to: " + state);
     console.log(results);
   });
 }
